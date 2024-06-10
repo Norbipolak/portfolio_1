@@ -1,0 +1,108 @@
+/*
+itt csináljuk meg a mixin-eket, amiket majd settings-ben hívunk meg és majd ott is lesz a magyarázat 
+
+fontos, hogy úgy hívjuk meg, hogy @include 
+itt meg úgy csináljuk, hogy @mixin és majd utána adjuk meg neki a nevét!!! 
+meg, hogy miket vár és azokat helyetesítjük majd be 
+*/
+
+@mixin mapMixin($map, $clsName, $prop) {
+    /*és akkor ide csináljuk, amit szoktunk egy map-nál, hogy @each meg $key $value in $map*/
+    @each $key, $value in $map {
+        .#{$clsName}-#{$key} {
+            #{$props}:$value!important;
+        }
+    }
+}
+
+@mixin listMixin($list, $clsName, $prop) {
+    @each $value in $list {
+        .#{$clsName}-#{$value} {
+            #{$props}:$value!important;
+        }
+    } 
+}
+
+@mixin loopMixin($from, $to, $step, $clsName, $prop, $unit) {
+    /*és itt egy while ciklust használtunk nem for-t*/
+    @while $from <= $to {
+        #{$clsName}-#{$from} {
+            #{$prop}:#{$from}#{$unit}!important;
+        }
+
+        /*
+        és itt a while ciklus addig fog menni amig nem éri el a to-t és step-enként megyünk tehát 
+        hozzáadjuk a from-hoz a step-et és a while után pedig megadtuk, hogy addig menjen még from <= to 
+        */
+        $from:$from+$step; /*és nagyon fontos, hogy itt nem =-jel hanem :-jel van*/
+    }
+
+}
+
+/*
+és akkor a loopMixin-t így hívjuk meg és ilyen class-ok lesznek majd belöle 
+->
+@include loopMixin(0, 50, 5, "class-t", "margin-top", "px");
+.class-t-0 {
+    margin-top: 0px !important;
+}
+
+.class-t-5 {
+    margin-top: 5px !important;
+}
+
+.class-t-10 {
+    margin-top: 10px !important;
+}
+
+.class-t-15 {
+    margin-top: 15px !important;
+}
+
+.class-t-20 {
+    margin-top: 20px !important;
+}
+
+.class-t-25 {
+    margin-top: 25px !important;
+}
+
+.class-t-30 {
+    margin-top: 30px !important;
+}
+
+.class-t-35 {
+    margin-top: 35px !important;
+}
+
+.class-t-40 {
+    margin-top: 40px !important;
+}
+
+.class-t-45 {
+    margin-top: 45px !important;
+}
+
+.class-t-50 {
+    margin-top: 50px !important;
+}
+
+
+fontos összegzés 
+- ha map van vagy list akkor azzal each-vel megyünk végig!!!! 
+mindegyiknél bekérünk egy $list-et vagy egy $map-ot, $clsName-t illetve egy $props-ot 
+    - ha map van akkor a clsName után a key-t adjuk meg és a props-nak meg a value-t 
+    - ha list van akkor a clsName után és a props után is a value-t adjuk meg 
+
+tehát list, akkor csak egy value van, ha meg map, akkor meg key illetve value is!! 
+
+ha meg loopMixin, akkor ott nem each-et hanem while használunk!!! ami hasonlít egy for-ra 
+    - ami kell nekünk itt: from, to, step, clsName, props, unit 
+    - meg kell határozni a futási feltételt, hogy meddig menjen a while, ameddig a from nem éri el a to-t nem lesz vele kisebb egyenlő <= 
+    - majd a végén hozzá kell adni a from-hoz a step-et -> $from:$from+$step 
+
+    clsName mellé itt nem key vagy value kell, hanem a from!!! 
+    props az meg egyenlő lesz a from meg a unit-val 
+*/
+
+

@@ -1,0 +1,255 @@
+/*
+itt a settings-be fogjuk meghívni azokat, amiket csinálunk majd a mixins-ben a map-okat, hogy mire legyenek 
+mert itt csináltunk 3féle mixins-t 
+1. listMixin 
+meg kell adni itt a meghívásnál 3 paramétert 
+    1. hogy melyik mixin-re csináltuk, hogy melyik listára ugye pl. $textTransforms 
+    2. mi legyen a neve a class-nak pl. a padding-et itt röviditettük p-re, de az mondjuk nem egy lista de itt azt adunk meg amit akarunk névnek
+    és akkor az lesz a class-nak a neve!!!  
+    3. mi legyen amire csináltuk, tehát mi van a {}-be ez lehet float, clear, cursor, text-align stb. 
+
+2. mapMixin 
+    itt is ugyanezt a 3 dolgot kell megadni 
+
+3. loopMixin, mivel ez csak egy ciklus ezért itt több dolgot kell megadni 
+    1. vár egy from-ot, hogy mettől menjen, itt ezt meghívásnál megadjuk, hogy 1-től mondjuk vagy mit amit akarunk
+    2. to, hogy meddig menjen, megadjuk itt, hogy 30 vagy amennyit akarunk 
+    3. step hogy hányasával menjen, ez is attól függ, hogy mire lett csinálva, modnjuk ha max-width-re, akkor nagyobb lesz, mintha vh-ra 
+    4. mi legyen a neve a class-nal, pl. a widthp az hogy megadjuk a width-et percentage-ben 
+    5. mi legyen az, amire csináltuk, ez van a {} pl. height, max-height, width, viewwidth
+    6. megadjuk, hogy mi legyen a mértékegysége, tehát a  unit-ja pl. %, px, vw 
+    és itt még a value után, tudunk egy olyat írni, hogy !important és akkor biztos, hogy ezt veszi majd figyelembe!!! 
+*/
+
+@include mapMixin($colors, "color", color);
+@include mapMixin($colors, "bg", background-color);
+@include mapMixin($spacings, "m", margin);
+@include mapMixin($colors, "ml", margin-left);
+@include mapMixin($colors, "mr", margin-right);
+@include mapMixin($colors, "mt", margin-top);
+@include mapMixin($colors, "mb", margin-bottom);
+
+@include mapMixin($spacings, "p", padding);
+@include mapMixin($spacings, "pl", padding-left);
+@include mapMixin($spacings, "pr", padding-right);
+@include mapMixin($spacings, "pt", padding-top);
+@include mapMixin($spacings, "pb", padding-bottom);
+
+/*
+és akkor ez mindegyikre elkészíti a megfelelőt, hogy .p-xs { padding: 3px; }
+*/
+
+@include listMixin($textTransforms, "transform", text-transform);
+/*
+és akkor ez is minden értékre, ami meg van adva a list-ben a text-transform-ra csínál belőlük osztélyokat, amiket majd fel tudunk használni 
+*/
+@include listMixin($displays, "d", display);
+@include listMixin($positions, "pos", position);
+@include listMixin($textAligns, "text", text-align);
+@include listMixin($floats, "float", float);
+/*
+clear-re megcsináltuk ugyanazokat mint a float-ra, tehát a left-et meg a right-ot csak itt a prop az egyiknál az lesz, hogy 
+clear, a másiknál meg az, hogy float!! de az értékek azok ugyanazok ezért lehet ugyanabból a list-ből
+*/
+@include listMixin($floats, "clear", clear);
+@include listMixin($cursors, "cursor", cursor);
+
+@include loopMixin(1, 100, 1, "vh", height, vh);
+@include loopMixin(1, 100, 1, "vw", width, vw);
+@include loopMixin(10, 500, 5, "height", height, px);
+@include loopMixin(5, 100, 5, "widthp", width, "%"); /*fontos, hogy ez % ""-be legyen!!*/
+@include loopMixin(10, 500, 1, "maxw", max-width, px);
+
+/*
+itt azt szeretnénk, hogy nagy képernyő menjen be egymás mellé, ezért kell egy float, de viszont kisebben meg menjenek be egymás alá, ezért 
+kell egy media screen and ott meg megadjuk, hogy mennyi px-en, menjen be float: none és clear: both-ra!!!! 
+fontos, hogy itt ezt a max-width-et a sizes-ra csinált map-ból fogjuk megkapni a map-get()-vel!!! 
+*/
+
+@each $float in $floats {
+    .float-#{$float}-m {
+        float: $float;
+    }
+    /*
+    itt megadjuk, hogy melyik float-ról van szó, hogy right vagy left, ugye itt az jelképezi a $float-ot 
+    mert végigmentünk rajtuk mint egy sima for of-val JavaScriptben 
+    */
+
+    @media screen and (max-width: map-get($sizes, "xs")) {
+        float: none;
+        clear: both;
+        margin: 10px auto!important; /*hogy középen legyenek, ha bemennek egymás alá*/
+    }
+}
+
+/*
+itt azt történt, hogy végigmentünk az összes float-on csináltunk belőlük egy osztályt és utána a media query-vel pedig megadtuk, hogy 
+milyen szélességen, ezt ugye megkaptuk a map-get-vel a $sizes map-ban van egy olyan, hogy "xs" és akkor ezen a méreten 
+azt ami alapből van, hogy float: right vagy left ahelyett lesz egy float: none majd clear:both-val pedig visszatesszük a document-flow-ba 
+ezért lesznek egymás alatt és nem egymás mellett meg adtunk itt egy margin-t is, hogy left-right auto, hogy középen legyen, meg felül-alul 
+egy kicsit eltávolodjon a 10-px-t 
+*/
+
+.margin-x-auto {
+    margin-left: auto;
+    margin-right: auto;
+} 
+
+/*
+ez azért jó, mert így külön tudunk neki adni valamilyen margin-top-ot illetve margin-bottom-ot 
+mert ha csak margin: auto van, akkor az mindenhol top-bottom is auto és akkor ott nem tudunk neki adni egy olyat, hogy margin-top 
+amit itt csináltunk -> @include mapMixin($colors, "mt", margin-top); !!!! 
+*/
+
+.clear {
+    clear: both;
+}
+
+/*
+itt meg csináltunk egy box-ot, úgy hogy meg vannak a color-jaink és itt csak megadunk egy background-color-t meg egy border-t 
+és akkor azért lesz box mert ezt egy div-nek fogjuk megadni, ami alapból 100% széles és az ebben lévő tartalom majd meghatározza a magasságot!! 
+fontos, hogy van itt egy olyan, hogy darken(), ami majd sőtétíteni fogja azt a színt, amit itt megadunk!!! annyi százalékkal, amit itt megadunk 
+neki 
+*/
+
+@each $key, $value in $colors {
+    .box-#{$key} {
+        border: 1px solid darken($value, 10%);
+        background-color: $value;
+    }
+}
+
+/*
+itt meg csinálunk egy sima for-t a margin-okra!!! 
+fontos, hogy itt mindenhol az $i-t fogjuk majd megadni és hogy from through van, hogy mennyitől meddig menjen a for!!!! 
+és ezt azért csináltuk meg itt egy for-val, mert nekünk van egy olyan, hogy @include mapMixin($spacings, "m", margin);
+de ott csak azzal tudunk dolgozni, ami benne van a spacings-mapunkban, itt meg egy ilyen for-val tudjuk meddig akarjuk 
+meg itt lesz mindenfelé egyesével fog ez a for menni ott meg van összesen 5 fajta!!!! 
+ezért jobb itt ez a for mert akkor lesz egyesével minden margin!!!!!!
+*/
+
+@for $i from 5 through 50 {
+    .mx-#{$i} {
+        margin-right:#{$i}px; /*fontos itt a behelyetesítésnél is kell a #{$}-es dolog!!!!*/
+        margin-left:#{$i}px;
+    }
+}
+
+@for $i from 5 through 50 {
+    .my-#{$i} {
+        margin-top:#{$i}px;
+        margin-bottom:#{i}px;
+    }
+}
+
+/*
+csinálunk külön egy border-t, ez nagyon hasonló, mint a box, csak itt nem lesz background-color, hanem csak border!!! 
+azért nem tudtuk ezt egy mixin-vel megcsinálni, mert ez kicsit komplexebb dolog, mert nem csak, annyi, mint a padding, hogy 
+padding: 10px hanem itt van három paraméter, hogy 1px solid meg utána a szín
+*/
+
+@each $key, $value in $colors {
+    .border-#{$key} {
+        border: 1px solid #{$value}; /*value is ilyen formában kell, hogy #{$}, meg itt kiszedjük, hogy primary meg secondary a colors-ból*/
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0;
+}
+
+/*
+megcsináljuk úgy a container-t, hogyha eléri az alatta levőnek a width-jét, akkor menjen be arra a width-re 
+*/
+
+.container-xl {
+    width: map-get($sizes, "xl");
+
+    @media screen and (max-width: map-get($sizes, "xl")) {
+        width: map-get($sizes, "lg");
+    }
+
+    @media screen and (max-width: map-get($sizes, "lg")) {
+        width: map-get($sizes, "md");
+    }
+
+    @media screen and (max-width: map-get($sizes, "md")) {
+        width: map-get($sizes, "sm");
+    }
+
+    /*
+    itt a legvégén meg mindig bemegy 100%-ra a width, ha már nincs több 
+    */
+
+    @media screen and (max-width: map-get($sizes, "sm")) {
+        width: 100%;
+    }
+}
+.container-lg {
+    width: map-get($sizes, "lg");
+
+    @media screen and (max-width: map-get($sizes, "lg")) {
+        width: map-get($sizes, "md");
+    }
+
+    @media screen and (max-width: map-get($sizes, "md")) {
+        width: map-get($sizes, "sm");
+    }
+
+    @media screen and (max-width: map-get($sizes, "sm")) {
+        width: 100%;
+    }
+}
+
+
+.container-md {
+    width: map-get($sizes, "md");
+
+    @media screen and (max-width: map-get($sizes, "md")) {
+        width: map-get($sizes, "sm");
+    }
+
+    @media screen and (max-width: map-get($sizes, "sm")) {
+        width: 100%;
+    }
+
+}
+.container-xl {
+    width: map-get($sizes, "sm");
+
+    @media screen and (max-width: map-get($sizes, "sm")) {
+        width: 100%;
+    }
+}
+
+/*
+megcsináltuk, hogy legyen a spacings-ből nem csak left, rigth, top, bottom 
+hanem legyen x meg y is itt majd két props-ot kell majd megadni szóval ez itt nem fog müködni 
+@include mapMixin($colors, "ml", margin-left);
+*/
+
+@each $key, $value in $spacings {
+    .mx-#{$key} {
+        margin-left:$value;
+        margin-right:$value;
+    }
+
+    .my-#{$key} {
+        margin-top:$value;
+        margin-bottom:$value;
+    }
+
+    .px-#{$key} {
+        padding-left:$value;
+        padding-right:$value;
+    }
+
+    .py-#{$key} {
+        padding-top:$value;
+        padding-bottom:$value;
+    }
+}
+
+.img-holder img {
+    width: 100%;
+}

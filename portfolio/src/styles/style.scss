@@ -1,0 +1,120 @@
+/*
+Nagyon fontos, hogy tudunk sass-t fordítás nélkül használni, de viszont be kell írni a terminálba, hogy 
+npm i sass
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+és még egy nagyon fontos dolog, hogy az App.js-ben is kell importálna, hogy style.scss, mert nekünk oda van beimportálva
+ugye ide az összes többi scss file is!!! 
+import "./styles/style.scss"
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+és akkor nekünk automatikusan fogja fordítani, mármint itt nem fognak nekünk megjelenni css file-ok hanem memóriába ezt lefordítja!! 
+
+*/
+/*
+ide importálunk be mindent az url-ét is annak a font-nak, vagy font-oknak, amiket kiválasztottunk meg a több scss-file-t is 
+*/
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+/*
+és akkor ott kiválasztjuk, hogy melyikeket akkarjuk importálni és majd itt megadjuk, hogy minek melyik legyen a font type-ja!!! 
+lehet úgy is, hogy link-eljük a html-be és akkor oda lesz ez berakva, de ez így jobb, hogy ide importáljuk 
+*/
+@import "mixins.scss";
+@import "init.scss";
+@import "variables.scss";
+@import "settings.scss";
+@import "grid.scss";
+@import "flex.scss";
+@import "inputs.scss";
+
+/*
+és akkor itt meg lehet adni pl. h1... hogy melyik font-ja legyen és ezt a font-family-vel lehet megadni!!!! 
+fontos, hogy a font-family vár két dolgot, a font nevét illetve az, hogy sans-serif vagy ilyesmi, hogy megyik családba tartozik 
+font-family: "Nunito", sans-serif;
+*/
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Nunito", sans-serif;
+    margin: 10px 0;
+}
+
+h1 {
+    color: map-get($colors, "primary");
+}
+
+h2 {
+    color: map-get($colors, "primary-lighter");
+}
+
+h3 {
+    color: map-get($colors, "secondary-darker");
+}
+
+h4 {
+    color: map-get($colors, "secondary");
+}
+
+h5 {
+    color: map-get($colors, "dark-grey");
+}
+
+h6 {
+    color: map-get($colors, "mid-grey");
+}
+
+p {
+    padding: 10px 0;
+}
+
+/*
+és akkor az összes h1 stb.-nek megadtuk az egyik font-family-t, itt meg megadjuk a body-nak az összes többit!!! 
+*/
+
+body {
+    font-family: "Open Sans", sans-serif;
+}
+
+/*
+csinálunk egy nav-menüt!!!! 
+*/
+
+nav {
+    height: 80px; /*kell egy height mindenképpen de viszont egy width az lehet alapból, hogy 100%-os*/
+    background-color: map-get($colors, "primary");
+
+    /*
+    és itt lehet ugyanebbe beleágyazva megcsinálni a ul-t meg az li-t 
+    */
+    ul {
+        display: flex;
+        justify-content: center;
+        /*
+        itt az ul esetében nem kell align-items: center, mert itt csak az a lényege az ul-nek, hogy horizontálisan középen legyenek az li-k 
+        */
+    }
+
+    li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80px;
+        // list-style: none;
+        &:hover {
+            background-color: map-get($colors, "secondary");
+        }
+        /*
+        ez itt nagyon fontos, hogy elemen belül ezzel tudunk egy pseudo osztályt is létrehozni 
+        & ebben az esetben a parent elementre utal, tehát a li-re!!!!!!!! 
+        parents selector, tehát ugyanaz, mintha ezt csináltuk volna -> li:hover !!!! 
+        */
+    }
+
+    a {
+        color:white;
+        text-decoration: none;
+        padding: 15px;
+    }
+}   
+
+/*
+és ha ez megvan, akkor csinálunk a components-ben egy Nav.js-t 
+*/
+

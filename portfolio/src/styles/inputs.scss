@@ -1,0 +1,111 @@
+/*
+alapból az input-oknak van egy border-jük és ha azt akarjuk, hogy ez ne legyen akkor kell az outline:0!!!!! 
+és persze ez a border ez akkor jelenik meg ha :focus-ban van a dolog, tehát belekattintottunk!!!! 
+*/
+
+%input:focus {
+    outline: 0;
+}
+
+/*
+hogy müködik a %, tehát a placeholder selector -> 
+%button-style {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+}
+
+.button-primary {
+    @extend %button-style;
+    background-color: blue;
+}
+
+.button-secondary {
+    @extend %button-style;
+    background-color: grey;
+}
+
+Meg tudjuk ezzel határozni, hogy milyen legyen egy button 
+és nagyon fontos, hogy az @extend-vel ugyanúgy, mint, ahogy csináltuk a class-oknál, itt is meg lehet azt csinálni, ami itt a példában van, hogy 
+csinálunk egy másik class-t, ami azt akarjuk, hogy ugyanolyan legyen, mint egy button, csak még vannak más tulajdonságai, akkor azt ki lehet 
+egészíteni ha van % egy extend-vel!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+és ez lesz majd belőle ha le lesz fordítva css-re 
+-> 
+.button-primary, .button-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+.button-primary {
+    background-color: blue;
+}
+
+.button-secondary {
+    background-color: grey;
+}
+
+szóval a közös tulajdonságoknál ott van mindkét osztály és amit külön szeretnénk az megcsináljuk mégegyszer külön 
+
+és ahol van ilyen, hogy % az azt jelenti, hogy reusable style, tehát ezt fel tudjuk majd használni és az extend-vel pedig kiegészíteni!!! 
+*/
+
+.input-sm {
+    padding: 5px 8px;
+}
+
+.input-md {
+    padding: 10px 14px;
+}
+
+.input-lg {
+    padding: 15px 20px;
+}
+
+/*
+és most van az, hogy kiegészítjük ezt amit megadtunk az input:focus a továbbiakra is 
+*/
+
+.brown-bordered-btn, .white-btn, .black-btn, .text-input {
+    @extend %input;
+}
+
+.text-input {
+    background-color: map-get($colors, "light-grey");
+    border: 1px solid #d0d0d0;
+    padding: 8px 15px;
+    font-size: 20px;
+}
+
+.black-btn {
+    background-color: black;
+    color: map-get($colors, "light-brown");
+    border: 1px solid transparent;
+    padding: 8px 15px;
+    transition: all 0.5s ease;
+}
+
+/*
+itt majd ezt a transition a pseudo-jára, tehát a :hover-re csináltuk majd, hogy ne rögtön menjen át olyanra, hanem az adott paramétereknek 
+megfelelően, ami a transition-ben van!! 
+*/
+
+.black-btn:hover {
+    background-color: map-get($colors, "light-brown");
+    color: black;
+}
+
+.brown-bordered-btn {
+    border: 2px solid map-get($colors, "light-brown");
+    background-color: transparent;
+    text-transform: uppercase;
+}
+
+.brown-bordered-btn:hover {
+    background-color: map-get($colors, "light-brown");
+    color: white;
+} 

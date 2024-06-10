@@ -1,0 +1,290 @@
+/*
+Az a jó, hogy egy react projekthez is fel tudjuk használni a scss file-okat és le sem kell őket fordítani, mint sima JavaScriptben, hogy legyen 
+belőlük css file, mert ott csak azt tudjuk majd belinkelni!!! 
+
+ezért itt a projektben megcsináljuk, ami majd kell scss-t és majd mindegyiket be fogjuk importálni a styles.scss-be, ahogy csináltuk a weblap 
+projektnél 
+
+Itt lesznek, amiket majd fel fogunk hasznélni és ezekbők csinálunk, majd class-okat, elöször, úgy, hogy a settings-ben végigmegyünk rajtuk
+majd a style-ba csinálunk belőkük osztályokat, amiket majd megadunk a jsx-ben!!!  
+
+fontos, hogy pl. úgy kell majd hívatkozni, ha van egy legenrált osztályunk, hogy map-get($colors, "black")
+map-get elöször vár egy listings-et, itt fontos a $-jel, majd vár egy értéket, ami abba a listings-ben megtalálható 
+úgy, mintha sima JavaScriptben csinálnánk ezt és akkor ott lesz egy :root, amiben ugyanígy vannak az értékek és ott majd ezt meg lehet 
+adni a var(--valami)-val 
+
+
+tehát ez így lenne sima css-ben 
+-> 
+:root {
+    --primary: #5D5F71;
+    --primary-lighter: #7f829a;
+    --primary-darker: #3e404b;
+    --secondary: #BF8B85;
+    --secondary-lighter: #edada6;
+    --secondary-darker: #916a66;
+    --light-grey: #efefef;
+    --mid-grey: #cccccc;
+    --dark-grey: #3b3b3b;
+    --black: #000000;
+    --white: #ffffff;
+    --success: #1bb458;
+    --danger: #de000f;
+    --warning: #ffae00;
+}
+
+csinálunk egy :root-ot, majd erre úgy tudunk hívatkozni, hogy var és ebbe kell, hogy mi az értéke 
+nagyon fontos, hogy az értékeket a :root-ban ilyen formában csináljuk majd --primary, --secondary 
+
+és akkor majd erre így lehet hívatkozni 
+-> 
+body {
+color: var(--primary)
+}
+
+body {
+    background-color: var(--light-grey);
+    color: var(--primary);
+}
+
+h1 {
+    color: var(--primary-darker);
+}
+
+a {
+    color: var(--secondary);
+}
+
+a:hover {
+    color: var(--secondary-lighter);
+}
+
+.success-message {
+    background-color: var(--success);
+    color: var(--white);
+}
+
+.error-message {
+    background-color: var(--danger);
+    color: var(--white);
+}
+
+.warning-message {
+    background-color: var(--warning);
+    color: var(--black);
+}
+
+
+és nagyon fontos, hogy itt a scss-ben meg a css-ben is ez egy sima objektum értékpárokkal!!! 
+de viszont más a formája, mert a css-ben ez egy sima objektum formátum, hogy :root {}
+itt viszont 
+-> 
+$color:(
+
+)
+
+4 különbség van 
+-> 
+1. kell egy $-jel a listing neve elé pl.$colors
+2. :-jel kell majd a neve után 
+3. itt nem {} van hanem ()
+4. még a css-ben az értékpároknál a kulcs az simán van, itt meg olyan mintha json formátum lenne ""-jel kell!!! 
+*/
+
+$color:(
+    "primary": #5d5f71,
+    "primary-lighter": #7f829a,
+    "primary-darker": #3e404b,
+    "secondary": #bf8b85,
+    "secondary-lighter": #edada6,
+    "secondary-darker": #916a66,
+    "light-grey": #efefef,
+    "mid-grey": #cccccc,
+    "dark-grey": #3b3b3b,
+    "black": #000000,
+    "white:": #ffffff,
+    "success": #1bb458,
+    "danger": #de000f,
+    "warning": #ffae00
+    /*
+    van egy olyan, hogy coolors és itt vannak jó színek egy weblaphoz! generál nekünk egy hex kódot 
+    */
+);
+
+$sizes:(
+    "xs": 640px,
+    "sm": 720px,
+    "md": 960px,
+    "lg": 1080px,
+    "xl": 1280px
+);
+
+$spacings:(
+    "xs": 3px,
+    "sm": 5px,
+    "md": 10px,
+    "lg": 15px,
+    "xl": 20px,
+    "xxl": 30px
+);
+
+/*
+és akkor vannak olyanok, ahol csak egy érték van ezeket nevezzük list-eknek és aminek több van, mint pl. itt felette, azok pedig map-ok!!!! 
+ez nagyon fontos, hogy ez a kétfajta van, mert máshogy tudunk rajtuk végigmenni és máshogy tudunk rájuk osztályokat csinálni!!! 
+
+map-nál nagyon fontos, hogy ott kulcs-értékpárok vannak!!!! itt ez a list ez meg olyan, mint egy tömb és végigtudunk rajta menni!!! 
+
+1. map (mint a $sizes, $colors, $spacings)
+
+hogyan tudunk innen értékeket megszerezni a mapból 
+-> 
+map-get, ami vár egy map-ot, hogy melyikből akarunk egy értéket megszerezni és vár egy kulcs-ot is, hogy melyik kulcshoz tartozó értéket 
+->
+.element {
+    padding: map-get($spacings, "md");
+}
+
+hogyan tudunk végigiterálni rajtuk!!! 
+@each-vel, de ugyanúgy az @each-vel a list-eken is
+
+@each $key, $value in $spacings {
+    .spacing-#{$key} {
+        margin: $value;
+    }
+}
+
+és akkor ez ilyen osztályokat fog generálni 
+.spacing-xs { margin: 3px; }, .spacing-sm { margin: 5px}
+
+fontos, hogy az @each-nél
+1. van itt egy $key meg egy $value!!! 
+2. in!!! és azután adjuk meg, hogy melyik map-on menjen végig $spacings 
+3. meg kell adni az osztálynál a $key-t -> .spacing-#{$key}
+    fontos a formátum kell egy #, {}, $
+és a {} belül meg megadjuk a $value-t az adott valaminek amit csináltunk!!!! pl. itt margin 
+
+2. list 
+
+itt felsoroljuk, hogy mik lehetnek pl. text-transform-nál lehet uppercase, lowercase stb. 
+
+itt kell a list neve előtt egy $ majd :, ezután viszont tudjuk az értékeket folyamatosan írni!!! 
+->
+$textTransforms: uppercase, lowercase, capitalize, none, full-width, full-size-kana;
+
+hogyan tudjuk ezeket az értékeket elérni
+-> 
+nth függvénnyel 
+
+.element {
+    text-transform: nth($textTransforms, 1) - fontos, hogy itt egytől indul, tehát az 1-es az uppercase lesz nem a lowercase!!! 
+}
+
+ez is vár egy a list-et meg egy számot, hogy hányadik elem, fontos, hogy ez nem egy indexet vár, vagyis nem 0-tól kezdődik, hanem 1-től 
+
+hogy lehet végigmenni rajtuk
+-> 
+@each 
+
+@each $textTransform in $textTransforms {
+    .text-#{$textTransform} {
+        text-transform: $textTransform;
+    }
+}
+
+.text-uppercase { text-transform: uppercase; }, .text-lowercase { text-transform: lowercase; }
+
+itt is hasonlóan az @each-vel kell végigmenni rajtuk, de viszont itt csak egy érték lesz nem $key, $value hanem $textTransfrom 
+és majd ezt adjuk meg a ahol csináljuk az osztályt .text-.. meg ott is ahol megadjuk az értéket -> text-transform: $textTransform!!! 
+*/
+
+$textTransforms: uppercase, lowercase, capitalize, none, full-width, full-size-kana;
+$display: inline, inline-block, block, none, grid, flex, table, table-cell;
+$positions: static, relative, absolute, fixed, sticky;
+/*
+itt fontos, hogy az absolute az mindig ugyanott marad, ha meg fixed, akkor meg ugyan a látható képernyőn, tehát ha azt húzzuk lefele, akkor az is 
+jön de mindig ott lesz amit megadtunk neki a top, bottom, left, rigth-val!!! 
+*/
+$alignItems: left, right, center;
+$alignContents: left, right, center, space-between, space-evenly, space-around;
+/*
+Ez a kettő fontos a flex-nél, hogy 
+1. direction 
+2. wrap 
+*/
+$flexDirections: row, row-reverse, column, column-reverse;
+$flexWrap: wrap, nowrap, wrap-reverse;
+$textAligns: left, right, center, justify; 
+/*
+ha azt írjuk, hogy left vagy right akkor lesz egy kis margin a másik oldalon, tehát a szöveg amit írunk az nem megy 100%-ban a végéig
+center ugyanúgy mindkét oldalon lesz egy kis margin 
+de viszont ha justify, akkor nem lesz margin és amit írunk szöveg az teljesen kimegy, felveszi a container-jének a 100%-os szélességét!!!!! 
+Akkor az a lényeg, hogy ezzel a szöveg kevesebb line-t fog felvenni, mert egy line-ban több szó lesz 
+*/
+$floats: left, right;
+/*
+fontos, hogy most csináltuk ez a float-ot és ezt majd úgy lehet megszüntetni, hogy clear: both 
+meg ilyenkor, hogyha float van akkor nem érzékeli a parent-jének a paramétereit (mert ki van véve a document flow-ból)ezért ezt kétféleképpen 
+lehet megoldani vagy csinálunk egy osztályt, amit megadunk, hogy clear: both de akkor kell csinálni neki egy extra-div-et, aminek ezt megadjuk 
+és akkor betesszük ezt a div-et, az elemek után, amiknek meg van adva a float tulajdonság  
+
+1. 
+    <div class="container">
+        <div class="floated-element"></div>
+        <div class="clearfix"></div>
+    </div>
+
+ez ahogy mi szoktuk csinálni, hogy mondjuk a floated-element-nek meg van adva, hogy float: right vagy left és utána csinálunk egy div-et 
+aminek meg van adva, hogy clear: both, tehát ebben az esetben itt a clearfix class az csak egy clear: both 
+
+de viszont ezt úgy is meg tudjuk csinálni, hogy nem csinálunk egy extra div-et, hanem a container-nek megadunk ugyanúgy egy clearfix 
+osztályt és majd alkalmazzuk a :after pseudot -> ilyenkor nem kell adni egy extra div-et hanem ez majd tudja magától, hogyha van egy float, 
+akkor utána clear: both-olja!!! 
+
+    <div class="container clearfix">
+        <div class="floated-element"></div>
+    </div>
+
+            .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+és van meg egy olyan is, hogy object-fit: cover 
+ez meg azt csinálja, hogy a kép amit beleteszünk egy container-be az szépen igazolodjon a container méreteihez!!!! 
+
+    <div class="container">
+        <img src="path/to/image.jpg" alt="Example Image" class="cover-image">
+    </div>
+
+és akkor ez teljesen felveszi a container-nek a méreteit, úgyhogy megmaradjon az aspect ratio-ja!!!! 
+        .container {
+            width: 300px;
+            height: 200px;
+            border: 1px solid #000;
+        }
+        .cover-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+és ha itt meg van adva, hogy 100% akkor a width-je is meg a height-ja is ugyanakkora lesz, mint a container-nek 
+viszont itt mi csak mindig azt szoktuk 
+hogy <img src="path/to/image.jpg" alt="Example Image" class="cover-image"> ennek nem adunk meg külön egy class-t 
+
+hanem ilyen formában 
+-> 
+container img {
+    width: 100%
+}
+
+tehát a container-ben levő img vegye fel a container 100%-os szélességét!!!! 
+*/
+$cursors: help, wait, pointer, crosshair, not-allowed, zoom-in, zoom-out, grab;
+/*
+ezek is fontosak, hogy milyen cursor-ok vannak!!! van egy kép erről a mobil-omban!!! 
+*/
+
+
+
